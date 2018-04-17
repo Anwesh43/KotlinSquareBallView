@@ -76,6 +76,8 @@ class SquareBallView(ctx : Context) : View(ctx) {
             val w : Float = canvas.width.toFloat()
             val h : Float = canvas.height.toFloat()
             val size : Float = (w/3 * state.scales[0])
+            paint.strokeWidth = Math.min(w,h)/60
+            paint.strokeCap = Paint.Cap.ROUND
             val sizeY : Float = (w/3 * state.scales[2])
             var sx : Float = 0f
             var sy : Float = 0f
@@ -107,5 +109,27 @@ class SquareBallView(ctx : Context) : View(ctx) {
             state.startUpdating(startcb)
         }
     }
-    
+    data class Renderer(var view : SquareBallView) {
+
+        private val squareBall : SquareBall = SquareBall(0)
+
+        private val animator : Animator = Animator(view)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            paint.color = Color.parseColor("#009688")
+            canvas.drawColor(Color.parseColor("#212121"))
+            squareBall.draw(canvas, paint)
+            animator.animate {
+                squareBall.update {
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            squareBall.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }
