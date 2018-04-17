@@ -44,6 +44,7 @@ class SquareBallView(ctx : Context) : View(ctx) {
             }
         }
     }
+
     data class Animator(var view : View, var animated : Boolean = false) {
         fun animate(updatecb : () -> Unit) {
             if (animated) {
@@ -69,4 +70,42 @@ class SquareBallView(ctx : Context) : View(ctx) {
             }
         }
     }
+
+    data class SquareBall(var i : Int, private val state : State = State()) {
+        fun draw(canvas : Canvas, paint : Paint) {
+            val w : Float = canvas.width.toFloat()
+            val h : Float = canvas.height.toFloat()
+            val size : Float = (w/3 * state.scales[0])
+            val sizeY : Float = (w/3 * state.scales[2])
+            var sx : Float = 0f
+            var sy : Float = 0f
+            for(i in 0..1) {
+                sx -= state.scales[3 + i*2]
+                sy += state.scales[4 + i *2]
+            }
+            canvas.save()
+            canvas.translate(w/2, h/2)
+            for (i in 0..1) {
+                canvas.save()
+                canvas.rotate(90f * i * state.scales[1])
+                for (j in 0..1) {
+                    canvas.drawLine(-size, sizeY * (1 - 2 * j), size, sizeY * (1 - 2 * j), paint)
+                }
+
+                canvas.restore()
+            }
+            canvas.save()
+            canvas.translate(-w/3, -w/3)
+            canvas.drawCircle(2 * w/3 * sx, 2 * w/3 * sy, w/10, paint)
+            canvas.restore()
+            canvas.restore()
+        }
+        fun update(stopcb : (Float) -> Unit) {
+            state.update(stopcb)
+        }
+        fun startUpdating(startcb : () -> Unit) {
+            state.startUpdating(startcb)
+        }
+    }
+    
 }
