@@ -4,6 +4,7 @@ package ui.anwesome.com.squareballview
  * Created by anweshmishra on 17/04/18.
  */
 
+import android.app.Activity
 import android.content.Context
 import android.view.View
 import android.view.MotionEvent
@@ -130,6 +131,13 @@ class SquareBallView(ctx : Context) : View(ctx) {
             squareBall.startUpdating {
                 animator.start()
             }
+        }
+    }
+    companion object {
+        fun create(activity : Activity) : SquareBallView  {
+            val view : SquareBallView = SquareBallView(activity)
+            activity.setContentView(view)
+            return view
         }
     }
 }
